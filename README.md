@@ -1,77 +1,69 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
-class Book {
-    int id;
-    String title;
-    String author;
-    boolean isIssued;
+class Account {
+    private int accountNumber;
+    private String accountHolderName;
+    private double balance;
 
-    Book(int id, String title, String author) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.isIssued = false;
+    public Account(int accountNumber, String accountHolderName, double balance) {
+        this.accountNumber = accountNumber;
+        this.accountHolderName = accountHolderName;
+        this.balance = balance;
     }
 
-    @Override
-    public String toString() {
-        return "Book ID: " + id + ", Title: " + title + ", Author: " + author + ", Issued: " + isIssued;
+    public void deposit(double amount) {
+        balance += amount;
+        System.out.println("Deposited " + amount + ". New Balance: " + balance);
+    }
+
+    public void withdraw(double amount) {
+        if (amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrew " + amount + ". Remaining Balance: " + balance);
+        } else {
+            System.out.println("Insufficient balance!");
+        }
+    }
+
+    public void displayAccountDetails() {
+        System.out.println("Account Number: " + accountNumber);
+        System.out.println("Account Holder: " + accountHolderName);
+        System.out.println("Balance: " + balance);
     }
 }
 
-public class LibraryManagementSystem {
-    private ArrayList<Book> books = new ArrayList<>();
-    private Scanner scanner = new Scanner(System.in);
+public class BankingApplication {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter Account Number: ");
+        int accountNumber = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        System.out.print("Enter Account Holder Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Initial Balance: ");
+        double balance = scanner.nextDouble();
 
-    public void addBook() {
-        System.out.print("Enter Book ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
-        System.out.print("Enter Book Title: ");
-        String title = scanner.nextLine();
-        System.out.print("Enter Book Author: ");
-        String author = scanner.nextLine();
-        books.add(new Book(id, title, author));
-        System.out.println("Book added successfully!");
-    }
+        Account account = new Account(accountNumber, name, balance);
 
-    public void issueBook() {
-        System.out.print("Enter Book ID to issue: ");
-        int id = scanner.nextInt();
-        for (Book book : books) {
-            if (book.id == id) {
-                if (!book.isIssued) {
-                    book.isIssued = true;
-                    System.out.println("Book issued successfully!");
-                } else {
-                    System.out.println("Book is already issued!");
-                }
-                return;
-            }
-        }
-        System.out.println("Book not found!");
-    }
-
-    public void viewBooks() {
-        System.out.println("Library Books:");
-        for (Book book : books) {
-            System.out.println(book);
-        }
-    }
-
-    public void menu() {
         while (true) {
-            System.out.println("\n1. Add Book");
-            System.out.println("2. Issue Book");
-            System.out.println("3. View Books");
+            System.out.println("\n1. Deposit");
+            System.out.println("2. Withdraw");
+            System.out.println("3. Display Account Details");
             System.out.println("4. Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
             switch (choice) {
-                case 1 -> addBook();
-                case 2 -> issueBook();
-                case 3 -> viewBooks();
+                case 1 -> {
+                    System.out.print("Enter deposit amount: ");
+                    double deposit = scanner.nextDouble();
+                    account.deposit(deposit);
+                }
+                case 2 -> {
+                    System.out.print("Enter withdrawal amount: ");
+                    double withdraw = scanner.nextDouble();
+                    account.withdraw(withdraw);
+                }
+                case 3 -> account.displayAccountDetails();
                 case 4 -> {
                     System.out.println("Exiting...");
                     return;
@@ -79,10 +71,5 @@ public class LibraryManagementSystem {
                 default -> System.out.println("Invalid choice! Try again.");
             }
         }
-    }
-
-    public static void main(String[] args) {
-        LibraryManagementSystem library = new LibraryManagementSystem();
-        library.menu();
     }
 }
